@@ -1,0 +1,160 @@
+<!-- 一个card 就是一个查询结果 -->
+<div class="card">
+  <!-- 概要显示 -->
+  <div class="card-header">
+    <h4>__NAME__</h4>
+    <ul class="card-actions">
+      <li>
+        <!-- 信息条目 类型 -->
+        <strong>__TYPE__</strong>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+    <p>__DES__</p>
+    <button style="display: block; float: right;" class="btn btn-default show_more_code_info" type="button"
+      data-toggle="modal" data-target="#E_S__ID__" data-whatever="@mdo">展开全部⬇</button>
+  </div>
+  <footer style="margin-top: 3%;" class="card-footer">
+    <div class="example-right pull-right">
+      <form id="form___ID__" action="">
+        <input id='input___ID__' type="text" value="__ID__" hidden>
+      </form>
+      <button onclick="clickBtnDel(this.value);" value="__TYPE__@__ID__" class="btn btn-label btn-danger"><label><i
+            class="mdi mdi-delete-empty"></i></label> 删除</button>
+
+      <button id="__ID__" class="btn btn-label btn-info show_more_code_info" data-toggle="modal" data-target="#E_E__ID__"
+        data-whatever="@mdo"><label><i class="mdi mdi-react"></i></label> 编辑</button>
+
+    </div>
+  </footer>
+
+  <!-- 模态框 显示详细的内容 -->
+  <div class="modal fade" id="E_S__ID__" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    style="display: none;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">×</span></button>
+          <h4 class="modal-title" id="exampleModalLabel">__NAME__</h4>
+        </div>
+        <div class="modal-body">
+          <div class="card">
+            <div class="card-body">
+              <form>
+                <div class="form-group">
+                  <label for="example-nf-email">代码</label>
+                  <pre style="height: 400px; overflow:scroll"><code>
+                      __CNT__
+                    </pre></code>
+                </div>
+                <div class="form-group">
+                  __FILE__
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 模态框 编辑内容 -->
+  <div class="modal fade" id="E_E__ID__" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    style="display: none;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">×</span></button>
+          <h4 class="modal-title" id="exampleModalLabel">__NAME__</h4>
+        </div>
+        <div class="modal-body">
+          <div class="card">
+            <div class="card-body">
+             
+              <!--  -->
+
+              <form id="code_form___ID__" enctype="multipart/form-data" onsubmit="return false;">
+                <input type="text" value="__TYPE__" name="old_type" id="old_type" hidden>
+
+                <div class="form-group">
+                    <label for="code_name"><span style="color: red;">*</span>代码名称</label>
+                    <!-- 代码名称 -->
+                    <input autocomplete="off" required="required" class="form-control" type="text" value="__NAME__"
+                        id="code_name___ID__" name="code_name" placeholder="例如：C语言链表库">
+                </div>
+
+                <!-- 代码类型 -->
+                <div class="form-group">
+                    <label for="code_type"><span style="color: red;">*</span>代码类型</label>
+                    <div>
+                        <select required class="form-control" id="code_type___ID__" name="code_type" size="1" value="__TYPE__">
+                            <option value="C">C</option>
+                            <option value="C#">C#</option>
+                            <option value="C++">C++</option>
+
+                            <option value="Python">Python</option>
+                            <option value="Java">Java</option>
+                            <option value="Script">Script</option>
+                            <option value="HTML">HTML</option>
+
+                            <option value="GO">Go</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="code_des"><span style="color: red;">*</span>代码简介</label>
+                    <!-- 代码简介 -->
+                    <textarea autocomplete="off" required="required" style="resize: none;"
+                        class="form-control" id="code_des___ID__" name="code_des" rows="6"
+                        placeholder="例如：使用C语言编写的链表库">__DES__</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="code_cnt"><span style="color: red;">*</span>代码</label>
+                    <br>
+                    <!-- 代码编辑 -->
+                    <textarea autocomplete="off" required="required" style="resize: none;"
+                        class="form-control" id="code_cnt___ID__" name="code_cnt" rows="10"
+                        placeholder="代码复制、粘贴到此处">__CNT__</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="code_ex">代码附件</label>
+                    <button type="button" class="btn btn-label btn-info btn-block" title="可以上传多个文件"
+                        style="margin-top: 5%;" onsubmit="return false;" value="__ID__" onclick="_s(this.value);" name="code_ex">
+                        <label><i class="mdi mdi-upload"></i></label>上传附件</button>
+                    <input name="code_files" onchange="load_files_name(this.id);" maxlength="__ID__" type="file" multiple id="upload_file___ID__" style="display:none;" />
+
+                    <textarea style="margin-top: 5%; resize: none;" disabled class="form-control"
+                        id="file_name___ID__" name="file_namet" rows="5" placeholder="未选中任何文件"></textarea>
+                </div>
+
+                <div class="form-group row">
+                        <!-- 提交 -->
+                        <button id="push_form" onclick="put_form(this.value);" value="__ID__"
+                            class="btn btn-label btn-primary btn-block"><label><i
+                                   class="mdi mdi-checkbox-marked-circle-outline"></i></label>提交</button>
+                </div>
+
+            </form>
+
+              <!--  -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

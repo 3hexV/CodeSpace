@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>查找结果</title>
+
+  <!-- <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="css/style.min.css" rel="stylesheet"> -->
+  <!-- <link rel="stylesheet" href="js/jconfirm/jquery-confirm.min.css"> -->
+
+  <link href="{{url_for('static', filename='js/jconfirm/jquery-confirm.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='css/materialdesignicons.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='css/style.min.css')}}" rel="stylesheet">
+  <link rel="icon" href="{{url_for('static', filename='img/favicon.ico')}}" type="image/ico">
+  <script src="{{url_for('static', filename='js/lightyear.js')}}"></script>
+
+  
+
+
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="container">
+      <!-- 查询的数据 展示 -->
+      <div class="row">
+        <div class="card">
+          <div class="card-header bg-info">
+            <h4>查找信息-摘要</h4>
+            <ul class="card-actions">
+              <li>
+                <button onclick="window.location.href='../'" type="button"><i class="mdi mdi-backspace"></i>
+                  返回主页</button>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <li>在数据集中查找：<strong style="color: blue;">{{code_collection}}</strong></li>
+            <li>强制包含文本：<strong style="color: green;">{{in_text}}</strong></li>
+            <li>强制不包含文本：<strong style="color: red;">{{not_in_text}}</strong></li>
+            <li>匹配文本：<strong style="color: goldenrod;">{{text_cnt}}</strong></li>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container" id="code_info_cnt">
+    </div>
+
+
+    <div class="container">
+      <div class="row">
+        <button id="btn_load_more" class="btn btn-block btn-default">加载更多</button>
+      </div>
+
+      <div style="margin-top: 3%;" class="row">
+        <button onclick="topFunction();" id="myBtn" class="btn btn-default btn-block">返回顶部</button>
+      </div>
+    </div>
+  </div>
+
+  <form id="form_lm" hidden action="/load_more/" method="POST">
+    <input type="text" value="5" hidden>
+  </form>
+</body>
+
+<!-- <script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="js/main.min.js"></script> -->
+<!-- <script src="js/jconfirm/jquery-confirm.min.js"></script> -->
+
+<script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/main.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/perfect-scrollbar.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/jconfirm/jquery-confirm.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/bootstrap-notify.min.js')}}"></script>
+
+
+
+<script type="text/javascript">
+  // 当网页向下滑动 20px 出现"返回顶部" 按钮
+window.onscroll = function() {scrollFunction()};
+ 
+function scrollFunction() {
+     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+         document.getElementById("myBtn").style.display = "block";
+     } else {
+         document.getElementById("myBtn").style.display = "none";
+     }
+ }
+  
+ // 点击按钮，返回顶部
+ function topFunction() {
+     document.body.scrollTop = 0;
+     document.documentElement.scrollTop = 0;
+ }
+
+  // 自动加载一次
+  window.onload=function(){
+    document.getElementById("btn_load_more").click();
+  }
+
+  var formData = new FormData($("#form_lm")[0]); //重点：要用这种方法接收表单的参数
+  formData.append('next', '5');
+  
+  // 提交表格
+  function put_form(_id) {
+
+    // 有空 则不能通过
+    if (($('#code_name_'+_id).val() == "") ||
+        ($('#code_des_'+_id).val() == "") ||
+        ($('#code_cnt_'+_id).val() == "") &&
+        ($('#file_name_'+_id).val() == "")) {
+        return;
+    }
+
+    // <---------------补全
+    // alert("INFO: "+_id);
+    putData(_id);        
+
+    return false;
+  };
+
+
+  function putData(_id) {
+        // Ajax提交数据
+        var formData = new FormData($("#code_form_"+_id)[0]);  //重点：要用这种方法接收表单的参数
+        formData.append("_id", _id );
+
+        $.ajax({
+            url:'/code_data/',
+            type:'PUT',
+            dataType: 'json',
+            async: false,
+            data: formData,
+            processData : false, // 使数据不做处理
+            contentType : false, // 不要设置Content-Type请求头
+            success: function(data){
+                console.log(data);
+                if (data.update_status == 'true') {
+                    // alert('上传成功！');
+                    lightyear.loading('show');
+                    lightyear.loading('hide');
+                    lightyear.notify('修改成功(即将刷新)~', 'success', 10);
+
+                    setTimeout(function () {
+                        location.reload();
+                    }, 2000);
+                }else if (data.update_status == 'false') {
+                    // alert('上传成功！');
+                    lightyear.loading('show');
+                    lightyear.loading('hide');
+                    lightyear.notify('修改失败(即将刷新)~', 'danger', 10);
+                    setTimeout(function () {
+                        location.reload();
+                    }, 2000);
+                }
+            },
+            error:function(response){
+                console.log(response);
+            }
+        });
+
+        return false;
+    }
+
+  function _s(_id) {
+    // alert("upload_file_"+_id);
+    document.getElementById("upload_file_"+_id).click();
+  }
+
+  function load_files_name(_id) {
+    var e = e || window.event;
+    var _file = e.target.files;
+    var names = "";
+    var _t_id = (""+_id).replace('upload_file_', '');
+
+    if (_file.length > 0) {
+        for (let i = 0; i < _file.length; i++) {
+            if (i == _file.length - 1) {
+                names += _file[i].name
+            } else {
+                names += _file[i].name + "\n"
+            }
+        }
+        $("#file_name_"+_t_id).val(names)
+    } else {
+        $("#file_name_"+_t_id).val("")
+    }
+  }
+
+
+  // 请求加载更多
+  $('#btn_load_more').click(function name(params) {
+    $.ajax({
+      url: '/load_more/',
+      type: 'POST',
+      dataType: 'json',
+      async: false,
+      data: formData,
+      processData: false, // 使数据不做处理
+      contentType: false, // 不要设置Content-Type请求头
+      success: function (data) {
+        if(data.get_more_status == 'end'){
+              lightyear.notify('全部加载完成~', 'info', 10);
+              $("#btn_load_more").attr("disabled","disabled");
+        }else if(data.get_more_status == 'empty'){
+              lightyear.notify('搜索结果为空(回到主页重新搜索)~', 'info', 10);
+              $("#btn_load_more").attr("disabled","disabled");
+        }
+        else{
+          last_str = $('#code_info_cnt').html();
+          last_str += data.code_info;
+          console.log(data.code_info);
+          $('#code_info_cnt').html(last_str);
+        }
+      },
+      error: function (response) {
+        console.log(response);
+      }
+    });
+  })
+
+  // 显示详细的信息
+  $('.show_more_code_info').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget)
+    var recipient = button.data('whatever')
+    var modal = $(this)
+    modal.find('.modal-title').text('发送新消息给 ' + recipient)
+    modal.find('.modal-body input').val(recipient)
+  });
+
+
+  clickBtnDel = function (_val) {
+    $.confirm({
+        title: '删除',
+        content: '是否确认删除该条目，删除后不可恢复！！！',
+        type: 'red',
+        typeAnimated: true,
+        buttons: {
+            tryAgain: {
+                text: '删除',
+                btnClass: 'btn-red',
+                action: function(){
+                  del_code(_val);
+                }
+            },
+            close: {
+                text: '手滑了'
+            }
+        }
+    });
+
+
+    function del_code(_val) {
+        var del_data = new FormData();
+        _val = _val + '';
+        _id = _val.split('@')[1];
+        _type = _val.split('@')[0];
+        del_data.append('d_id', _id);
+        del_data.append('d_type',_type);
+
+        $.ajax({
+        url: '/code_data/',
+        type: 'DELETE',
+        dataType: 'json',
+        async: false,
+        data: del_data,
+        processData: false, // 使数据不做处理
+        contentType: false, // 不要设置Content-Type请求头
+        success: function (data) {
+          if(data.del_status == 'true'){
+              // 删除数据
+              lightyear.loading('show');
+
+              setTimeout(function () {
+                lightyear.loading('hide');
+                lightyear.notify('删除成功~', 'success', 10);
+            }, 10);
+
+              location.reload();
+          }else if(data.del_status == 'false'){
+                // 删除数据
+              lightyear.loading('show');
+
+              setTimeout(function () {
+                lightyear.loading('hide');
+                lightyear.notify('删除失败~', 'danger', 10);
+              }, 10)
+          }
+        },
+        error: function (response) {
+          console.log(response);
+        }
+      });
+    }
+
+
+};
+
+</script>
+
+</html>
